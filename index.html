@@ -260,6 +260,7 @@ details summary{font-weight:700;min-height:44px;display:flex;align-items:center;
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .center .bub{flex:none;max-width:340px;text-align:left}
 .stage{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%)}
+.pill{white-space:nowrap}
 
 </style>
 </head>
@@ -269,7 +270,7 @@ details summary{font-weight:700;min-height:44px;display:flex;align-items:center;
 <nav class="nav" id="nav" aria-label="Main"></nav>
 <div id="ov" role="dialog" aria-label="Lesson"><canvas id="conf" aria-hidden="true"></canvas><div id="sroot" style="position:absolute;inset:0;z-index:1"></div></div>
 <noscript>Means &amp; Ends needs JavaScript turned on.</noscript>
-<script>window.ME_BUILD='1795675489';</script>
+<script>window.ME_BUILD='1795676171';</script>
 <script>
 /* Lesson content format.
    U({id, track, title, blurb, scene, lessons:[{t, sub, items:[[teach, question, {g, h}?], ...]}]})
@@ -1576,7 +1577,10 @@ const ic=(n,s)=>'<svg width="'+(s||22)+'" height="'+(s||22)+'" viewBox="0 0 24 2
 let st;
 function fresh(){return {v:1,name:'',track:'g8',xp:0,days:{},goal:20,streak:0,lastDay:'',hearts:MAXH,heartAt:0,done:{},cp:{},srs:{},mistakes:[],theme:'auto',ob:false,lb:{joined:false,id:'',name:''},rem:{on:false,freq:'off',hour:19,id:'',key:''},right:0,wrong:0}}
 function load(){st=fresh();try{const o=JSON.parse(localStorage.getItem(KEY)||'null');if(o&&o.v===1){Object.assign(st,o);st.lb=Object.assign(fresh().lb,o.lb||{});st.rem=Object.assign(fresh().rem,o.rem||{})}}catch(e){}
- if(!TRACKS.some(t=>t.id===st.track))st.track='g8';st.mistakes=st.mistakes.filter(id=>QS[id])}
+ if(!TRACKS.some(t=>t.id===st.track))st.track='g8';
+ /* The Live Desk is rewritten each month: when its date stamp changes, it opens up to be played again. */
+ const lv=UNITS.find(u=>u.id==='live');if(lv&&st.liveStamp!==lv.stamp){Object.keys(st.done).forEach(k=>{if(k.indexOf('live/')===0)delete st.done[k]});delete st.cp.live;st.mistakes=st.mistakes.filter(id=>id.indexOf('live.')!==0);st.liveStamp=lv.stamp}
+st.mistakes=st.mistakes.filter(id=>QS[id])}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}lbPush();remPush()}
 function heartsTick(){if(st.hearts>=MAXH){st.heartAt=0;return}if(!st.heartAt)st.heartAt=Date.now();const n=Math.floor((Date.now()-st.heartAt)/HEART_MS);if(n>0){st.hearts=Math.min(MAXH,st.hearts+n);st.heartAt=st.hearts>=MAXH?0:st.heartAt+n*HEART_MS}}
 function loseHeart(){heartsTick();if(st.hearts>0){st.hearts--;if(!st.heartAt)st.heartAt=Date.now()}}

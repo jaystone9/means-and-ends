@@ -241,3 +241,4 @@ details summary{font-weight:700;min-height:44px;display:flex;align-items:center;
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .center .bub{flex:none;max-width:340px;text-align:left}
 .stage{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 95%,transparent 100%)}
+.pill{white-space:nowrap}
