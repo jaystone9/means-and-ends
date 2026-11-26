@@ -270,7 +270,7 @@ details summary{font-weight:700;min-height:44px;display:flex;align-items:center;
 <nav class="nav" id="nav" aria-label="Main"></nav>
 <div id="ov" role="dialog" aria-label="Lesson"><canvas id="conf" aria-hidden="true"></canvas><div id="sroot" style="position:absolute;inset:0;z-index:1"></div></div>
 <noscript>Means &amp; Ends needs JavaScript turned on.</noscript>
-<script>window.ME_BUILD='1795676468';</script>
+<script>window.ME_BUILD='1795678338';</script>
 <script>
 /* Lesson content format.
    U({id, track, title, blurb, scene, lessons:[{t, sub, items:[[teach, question, {g, h}?], ...]}]})
@@ -1419,7 +1419,7 @@ const HAZ='<circle data-p="aura" cx="100" cy="130" r="90" fill="url(#m-aura)" op
 const NAMES={gus:'Gus the seagull',hazel:'Hazel the beaver'};
 /* App-level pose names map onto each character's own acting. */
 const ALIAS={gus:{right:'cheer',wrong:'facepalm',comfort:'notcare'},hazel:{right:'cheer',wrong:'wince',comfort:'comfort'}};
-const SNAP={idle:.1,think:1,cheer:.27,facepalm:1.5,wince:.4,hyped:.2,notcare:1.5,comfort:1,dance:.25,hop:.2,sad:1};
+const SNAP={idle:.1,hello:.4,think:1,cheer:.27,facepalm:1.5,wince:.4,hyped:.2,notcare:1.5,comfort:1,dance:.25,hop:.2,sad:1};
 const SPRING={rootY:[520,24],squash:[700,13],pupX:[500,30],pupY:[500,30],lid:[700,40],flip:[260,22],palm:[220,17],happy:[900,60],heartY:[120,14]};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -1429,6 +1429,7 @@ function targets(who,pose,t,T,o){
  if(who==='gus'){
   c={rootX:0,rootY:0,rot:0,spin:0,headRot:4*s(T*.7),headY:0,wingL:0,wingR:0,tail:0,pupX:[0,5,0,-5][Math.floor(T/2.2)%4],pupY:0,lid:.35,browL:-14,browR:6,browY:0,mouth:0,palm:0,flip:1,fry:1,shades:0,spark:0,squash:0,sweat:0};
   if(pose==='idle'){if(T%4.3<.25)c.wingR=-18;if(T%3.1<.2)c.tail=14;if(T%5.2<.5)c.mouth=.3*Math.abs(s(T*14))}
+  else if(pose==='hello'){c.rootY=-5*Math.abs(s(T*2.2));c.rot=3*s(T*1.1);c.headRot=-7+4*s(T*1.1);c.wingL=70+16*s(T*6);c.lid=.22;c.browL=-10;c.browR=-2;c.tail=10*s(T*4.4);c.mouth=T%4.4<.6?.3*Math.abs(s(T*14)):0}
   else if(pose==='think'){const lx=P.lookX||0,ly=P.lookY||0;c.rot=6*lx;c.headRot=12*lx;c.headY=4;c.pupX=6*lx;c.pupY=3+4*ly;c.lid=.12;c.browL=-16;c.browR=-2;c.browY=-3;c.wingR=-35+5*s(T*3)}
   else if(pose==='cheer'){hop(.9,.55,44);c.wingL=95+25*s(t*24);c.wingR=-150+18*s(t*12);c.lid=0;c.mouth=1;c.browY=-7;c.browL=-6;c.browR=-6;c.spark=.8;c.fry=0;c.headRot=-6;c.tail=18*s(t*20)}
   else if(pose==='facepalm'){const r=Math.min(1,t/1.2);c.palm=1;c.headRot=10;c.headY=6;c.lid=.62;c.pupX=4*Math.cos(t*5)*(1-r);c.pupY=-5;c.browL=-4;c.browR=4;c.browY=2;c.rot=-3;c.sweat=1;c.fry=0;c.squash=.04*s(t*3)}
@@ -1442,6 +1443,7 @@ function targets(who,pose,t,T,o){
  }else{
   c={rootX:0,rootY:0,rot:0,spin:0,headRot:3*s(T*.8),headY:0,armL:0,armR:0,tail:5*s(T*2),pupX:[0,4,0,-4][Math.floor(T/2.6)%4],pupY:0,lid:0,browL:-4,browR:-4,browY:0,mouth:0,smile:1,happy:0,stick:1,spark:0,squash:0,heart:0,heartY:0};
   if(pose==='idle'){if(T%5.5<.3)c.armR=-12}
+  else if(pose==='hello'){c.rootY=-5*Math.abs(s(T*2.2+1));c.rot=-3*s(T*1.1);c.headRot=6+4*s(T*1.1);c.armL=105+16*s(T*6);c.mouth=.35;c.browY=-3;c.tail=12*s(T*4.4)}
   else if(pose==='think'){const lx=P.lookX||0,ly=P.lookY||0;c.rot=6*lx;c.headRot=10*lx;c.headY=3;c.pupX=5*lx;c.pupY=2+3*ly;c.browL=-8;c.browR=2;c.browY=-2;c.armR=-55+4*s(T*3)}
   else if(pose==='cheer'){hop(.9,.55,40);c.armL=125+15*s(t*18);c.armR=-125-15*s(t*18);c.happy=1;c.mouth=1;c.browY=-5;c.spark=.8;c.stick=0;c.tail=20*s(t*18)}
   else if(pose==='wince'){if(t<.8){c.squash=.09;c.lid=.75;c.browL=-16;c.browR=-16;c.mouth=.4;c.smile=-1;c.rot=-4;c.armL=30;c.armR=-30;c.pupX=0}
@@ -1475,7 +1477,9 @@ Inst.prototype.step=function(dt){
  const tg=targets(this.who,pose,T-s.t0,T,this.opts());
  const pk=T-s.poke;if(pk>=0&&pk<.75){const a=Math.sin(Math.PI*pk/.75);tg.rootY=-32*a;tg.squash=-.06*a;tg.mouth=.8;tg.lid=0;if(this.who==='gus'){tg.spin=360*(pk/.75);tg.browY=-6}else{tg.happy=1;tg.armL=110*a;tg.armR=-110*a}}
  if(!s.ch)s.ch=Object.assign({},tg);
- for(const k in tg){if(k==='spin'){s.ch.spin=tg.spin;continue}const sp=SPRING[k]||[240,15];const x=s.ch[k]==null?tg[k]:s.ch[k];const v=s.vel[k]||0;const a=sp[0]*(tg[k]-x)-sp[1]*v;s.vel[k]=v+a*dt;s.ch[k]=x+s.vel[k]*dt}
+ /* small fixed sub-steps keep stiff springs stable when the screen runs at 30 frames a second */
+ const n=Math.ceil(dt/.006),h=dt/n;
+ for(const k in tg){if(k==='spin'){s.ch.spin=tg.spin;continue}const sp=SPRING[k]||[240,15];let x=s.ch[k]==null?tg[k]:s.ch[k],v=s.vel[k]||0;if(!isFinite(x)||!isFinite(v)){x=tg[k];v=0}for(let j=0;j<n;j++){v+=(sp[0]*(tg[k]-x)-sp[1]*v)*h;x+=v*h}s.vel[k]=v;s.ch[k]=x}
  this.draw(s.ch,true)};
 Inst.prototype.still=function(){const pose=this.pose();const tg=targets(this.who,pose,SNAP[pose]||.1,SNAP[pose]||.1,this.opts());tg.spin=0;this.draw(tg,false)};
 Inst.prototype.draw=function(c,live){
@@ -1738,7 +1742,7 @@ function toCurrent(smooth){const n=$('#curnode');if(n)n.scrollIntoView({block:'c
 /* ---------- onboarding ---------- */
 let obStep=0;
 function onboardHTML(){
- if(obStep===0)return '<div class="page" style="min-height:calc(100dvh - 60px);justify-content:center;text-align:center;align-items:center"><div class="duo">'+Mascots.html('hazel','cheer',150,'ob1')+Mascots.html('gus','idle',150,'ob2')+'</div><h1 style="font-size:40px">Means &amp; Ends</h1><p class="muted" style="font-size:18px;max-width:340px">Learn what socialism and communism are, where they came from, what worked, what failed, and what people argue about today.</p><div class="card" style="text-align:left;display:flex;flex-direction:column;gap:10px;width:100%"><p><b>Hazel</b> is a beaver. She is kind and on your side.</p><p><b>Gus</b> is a seagull. He steals fries and has opinions.</p><p class="muted" style="font-size:15.500px">The lessons stick to facts and include the critics. When Gus or Hazel share an opinion, it is always labeled as theirs.</p></div><button class="btn" data-a="ob-next">Get started'+ic('arrow',20)+'</button></div>';
+ if(obStep===0)return '<div class="page" style="min-height:calc(100dvh - 60px);justify-content:center;text-align:center;align-items:center"><div class="duo">'+Mascots.html('hazel','hello',150,'ob1')+Mascots.html('gus','hello',150,'ob2')+'</div><h1 style="font-size:40px">Means &amp; Ends</h1><p class="muted" style="font-size:18px;max-width:340px">Learn what socialism and communism are, where they came from, what worked, what failed, and what people argue about today.</p><div class="card" style="text-align:left;display:flex;flex-direction:column;gap:10px;width:100%"><p><b>Hazel</b> is a beaver. She is kind and on your side.</p><p><b>Gus</b> is a seagull. He steals fries and has opinions.</p><p class="muted" style="font-size:15.500px">The lessons stick to facts and include the critics. When Gus or Hazel share an opinion, it is always labeled as theirs.</p></div><button class="btn" data-a="ob-next">Get started'+ic('arrow',20)+'</button></div>';
  if(obStep===1)return '<div class="page"><div class="pagehead">'+Mascots.html('hazel','think',100,'ob1')+'<div><h1>Pick a starting level</h1><p class="muted">You can switch any time.</p></div></div>'+TRACKS.slice(0,4).map(t=>'<button class="trk'+(st.track===t.id?' on':'')+'" data-a="ob-track" data-t="'+t.id+'"><div><b>'+esc(t.name)+'</b><small>'+esc(t.sub)+'</small></div></button>').join('')+'<p class="muted" style="font-size:15px">New to all of this? Start with 8th grade. It assumes you know nothing yet, and that is fine.</p><button class="btn" data-a="ob-next">Next'+ic('arrow',20)+'</button></div>';
  return '<div class="page"><div class="pagehead">'+Mascots.html('gus','think',100,'ob2')+'<div><h1>Set a daily goal</h1><p class="muted">One lesson is about 15 XP.</p></div></div>'+[[10,'Easygoing','About one short lesson a day'],[20,'Steady','A lesson and a little practice'],[30,'Serious','Two lessons a day'],[50,'All in','Gus says: prove it']].map(g=>'<button class="trk'+(st.goal===g[0]?' on':'')+'" data-a="ob-goal" data-g="'+g[0]+'"><div><b>'+g[1]+' · '+g[0]+' XP</b><small>'+g[2]+'</small></div></button>').join('')+'<button class="btn" data-a="ob-done">Start learning'+ic('arrow',20)+'</button></div>'}
 
