@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reminder keys</title><meta name="robots" content="noindex">
+<style>:root{--bg:#F5F6FB;--ink:#1F2A5C;--card:#fff;--line:#D9DCEB}@media (prefers-color-scheme:dark){:root{--bg:#12162B;--ink:#EEF0FA;--card:#1C2140;--line:#33395E}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}main{max-width:640px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}code,textarea{font:14px ui-monospace,monospace}
+textarea{width:100%;box-sizing:border-box;border:2px solid var(--line);border-radius:10px;padding:10px;background:transparent;color:inherit;resize:none}
+button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 16px;background:#D63A1C;color:#fff;cursor:pointer;margin-top:8px}</style></head><body><main>
+<h1>Means &amp; Ends reminder keys</h1>
+<p>This page makes a new key pair for play reminders. It runs only in your browser, and nothing is sent anywhere.</p>
+<div class="card"><b>1. Private key</b> (secret)<p>In GitHub, open the means-and-ends repo, then <b>Settings → Secrets and variables → Actions → New repository secret</b>. Name it <code>VAPID_PRIVATE_KEY</code> and paste this as the value.</p><textarea id="priv" rows="2" readonly></textarea><button data-c="priv">Copy private key</button></div>
+<div class="card"><b>2. Public key</b> (safe to share)<p>Paste this in the chat with Claude.</p><textarea id="pub" rows="3" readonly></textarea><button data-c="pub">Copy public key</button></div>
+<p>Then close this page. Reloading it makes a different pair, so copy both from the same visit.</p>
+<script>
+const b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']).then(async k=>{
+ document.getElementById('pub').value=b64u(await crypto.subtle.exportKey('raw',k.publicKey));
+ document.getElementById('priv').value=(await crypto.subtle.exportKey('jwk',k.privateKey)).d});
+document.querySelectorAll('[data-c]').forEach(btn=>btn.onclick=()=>{const t=document.getElementById(btn.dataset.c);t.select();(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).catch(()=>document.execCommand('copy'));btn.textContent='Copied'});
+</script></main></body></html>

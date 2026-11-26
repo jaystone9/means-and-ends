@@ -1,0 +1,27 @@
+name: Play reminders
+on:
+  schedule:
+    - cron: '4,19,34,49 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: play-reminders
+  cancel-in-progress: false
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save --no-package-lock web-push@3.6.7
+      - run: |
+          export VAPID_PUBLIC_KEY="$(cat vapid-public.txt 2>/dev/null || true)"
+          node scripts/remind.mjs
+        env:
+          FIREBASE_PROJECT: means-and-ends
+          FIREBASE_API_KEY: AIzaSyD8gZ38ipaRD9aLNzWqWpVgdv3uXGpmNMQ
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
